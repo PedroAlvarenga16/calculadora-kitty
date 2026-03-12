@@ -2,7 +2,11 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="light-content">
+<meta name="apple-mobile-web-app-title" content="Kitty Calc">
+<meta name="theme-color" content="#fdf6f0">
 <title>Kitty Calculator</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -18,17 +22,19 @@
   --soft-grey: #f2eae8;
   --mid-grey:  #c9b8ba;
   --text:      #3d1f2b;
-  --shadow-color: 320deg 40% 60;%
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+html { height: 100%; }
+
 body {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--cream);
+  min-height: 100%;
   font-family: 'Nunito', sans-serif;
-  overflow: hidden;
+  background: var(--cream);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* ── Noise texture overlay ── */
@@ -57,177 +63,236 @@ body::before {
 @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,-30px)} }
 @keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(15px,-15px)} }
 
-/* ── Card ── */
-.card {
-  position: relative;
-  z-index: 1;
-  background: rgba(255,255,255,0.82);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1.5px solid rgba(255,255,255,0.9);
-  border-radius: 40px;
-  padding: 36px 32px 32px;
-  width: 360px;
-  box-shadow:
-    0 2px 0px rgba(255,255,255,0.9) inset,
-    0 -1px 0 rgba(0,0,0,0.04) inset,
-    0 8px 24px -4px rgba(168,50,88,0.12),
-    0 32px 64px -12px rgba(168,50,88,0.18),
-    0 64px 96px -24px rgba(168,50,88,0.10);
-  animation: floatIn 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
-}
-@keyframes floatIn {
-  from { opacity:0; transform: translateY(32px) scale(0.95); }
-  to   { opacity:1; transform: translateY(0) scale(1); }
+/* ════════════════════════════════════════
+   DESKTOP (telas >= 600px)
+   Card centralizado, layout original
+   ════════════════════════════════════════ */
+@media (min-width: 600px) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1.5px solid rgba(255,255,255,0.9);
+    border-radius: 40px;
+    padding: 36px 32px 32px;
+    width: 360px;
+    box-shadow:
+      0 2px 0px rgba(255,255,255,0.9) inset,
+      0 -1px 0 rgba(0,0,0,0.04) inset,
+      0 8px 24px -4px rgba(168,50,88,0.12),
+      0 32px 64px -12px rgba(168,50,88,0.18),
+      0 64px 96px -24px rgba(168,50,88,0.10);
+    animation: floatIn 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes floatIn {
+    from { opacity:0; transform: translateY(32px) scale(0.95); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  /* kitty */
+  .kitty {
+    position: absolute;
+    top: -68px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 80px;
+  }
+  .kitty-face {
+    width: 86px; height: 72px;
+    background: white;
+    border-radius: 50% 50% 46% 46%;
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    bottom: 0;
+    border: 2px solid #f0dde4;
+    box-shadow: 0 4px 16px rgba(168,50,88,0.15);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    padding-top: 18px;
+  }
+  .ear { width: 28px; height: 32px; top: -10px; }
+  .ear-inner { width: 14px; height: 18px; }
+  .eye { width: 8px; height: 8px; }
+  .eye::after { width: 3px; height: 3px; }
+  .nose { width: 8px; height: 5px; }
+  .whiskers { gap: 10px; }
+  .w { width: 18px; }
+  .bow { width: 28px; height: 22px; }
+  .bow-side { width: 12px; height: 10px; }
+  .bow-knot { width: 7px; height: 7px; }
+  .bow-wrap { top: -4px; right: -8px; }
+
+  .kitty-wrap { display: none; } /* hide mobile kitty on desktop */
+
+  /* header */
+  .header { margin-top: 20px; margin-bottom: 20px; }
+  .header h1 { font-size: 15px; letter-spacing: 3px; }
+
+  /* display */
+  .display-wrap {
+    background: var(--soft-grey);
+    border-radius: 20px;
+    padding: 16px 20px 14px;
+    margin-bottom: 20px;
+    border: 1.5px solid rgba(200,170,180,0.35);
+    box-shadow: inset 0 2px 8px rgba(168,50,88,0.06), inset 0 -1px 0 rgba(255,255,255,0.8);
+  }
+  .display-history { font-size: 12px; height: 16px; }
+  #display { font-size: 36px; letter-spacing: -1px; pointer-events: auto; }
+
+  /* buttons */
+  .buttons-section { padding: 0; }
+  button { height: 68px; border-radius: 18px; font-size: 18px; }
+  .btn-clear { font-size: 14px; }
+  .btn-eq { font-size: 24px; }
+  .span2 { border-radius: 22px; }
+
+  /* footer */
+  .footer { margin-top: 18px; font-size: 10px; }
+
+  /* mobile-only elements hidden on desktop */
+  .app { display: contents; }
+  .top-section { display: contents; }
+  .display-label { display: block; }
 }
 
-/* ── Kitty face ── */
-.kitty {
-  position: absolute;
-  top: -68px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 80px;
+/* ════════════════════════════════════════
+   MOBILE (telas < 600px)
+   Full-screen, layout em coluna
+   ════════════════════════════════════════ */
+@media (max-width: 599px) {
+  html { overflow: hidden; }
+
+  body {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
+  }
+
+  /* hide desktop-only card structure */
+  .card {
+    display: contents; /* card "dissolves" — children are laid out directly */
+  }
+
+  /* kitty fixed on top of card — hide on mobile (we use kitty-wrap instead) */
+  .kitty { display: none; }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .top-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 20px 0;
+    min-height: 0;
+  }
+
+  /* mobile kitty */
+  .kitty-wrap {
+    display: flex;
+    justify-content: center;
+    padding-top: 12px;
+    padding-bottom: 8px;
+    flex-shrink: 0;
+  }
+  .kitty-mob {
+    position: relative;
+    width: 90px;
+    height: 72px;
+  }
+  .kitty-face-mob {
+    width: 76px; height: 64px;
+    background: white;
+    border-radius: 50% 50% 46% 46%;
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    bottom: 0;
+    border: 2px solid #f0dde4;
+    box-shadow: 0 4px 16px rgba(168,50,88,0.15);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    padding-top: 14px;
+  }
+
+  /* header */
+  .header { margin-bottom: 14px; flex-shrink: 0; }
+  .header h1 { font-size: 11px; letter-spacing: 3px; }
+
+  /* display */
+  .display-wrap {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-radius: 24px;
+    padding: 16px 20px 14px;
+    border: 1.5px solid rgba(255,255,255,0.9);
+    box-shadow: inset 0 2px 8px rgba(168,50,88,0.05), 0 4px 20px rgba(168,50,88,0.08);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 110px;
+    max-height: 150px;
+  }
+  .display-history { font-size: 13px; height: 18px; }
+  #display {
+    font-size: clamp(28px, 8vw, 42px);
+    pointer-events: none;
+  }
+
+  /* buttons */
+  .buttons-section { padding: 12px 16px 16px; flex-shrink: 0; }
+  button { height: clamp(58px, 13vw, 72px); border-radius: 20px; font-size: clamp(16px, 5vw, 22px); touch-action: manipulation; }
+  .btn-clear { font-size: clamp(12px, 3.5vw, 15px); }
+  .btn-eq { font-size: clamp(20px, 6vw, 28px); }
+  .span2 { border-radius: 24px; }
+
+  /* footer */
+  .footer { padding: 8px 0 4px; font-size: 9px; }
+
+  /* landscape */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .kitty-wrap { display: none; }
+    .header { margin-bottom: 4px; }
+    .top-section { padding-top: 4px; }
+    .buttons-section { padding: 6px 16px 8px; }
+    button { height: 46px; }
+    .display-wrap { min-height: 70px; max-height: 90px; }
+    #display { font-size: 26px; }
+  }
 }
 
-.kitty-face {
-  width: 86px;
-  height: 72px;
-  background: white;
-  border-radius: 50% 50% 46% 46%;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 0;
-  border: 2px solid #f0dde4;
-  box-shadow: 0 4px 16px rgba(168,50,88,0.15);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 18px;
-}
+/* ── Shared styles (all screen sizes) ── */
 
-/* ears */
-.ear {
-  position: absolute;
-  width: 28px;
-  height: 32px;
-  background: white;
-  border: 2px solid #f0dde4;
-  top: -10px;
-}
-.ear.left  { left: -2px; border-radius: 50% 50% 0 50%; transform: rotate(-8deg); }
-.ear.right { right: -2px; border-radius: 50% 0 50% 50%; transform: rotate(8deg); }
-.ear-inner {
-  position: absolute;
-  width: 14px; height: 18px;
-  background: #fbc8d8;
-  border-radius: inherit;
-  top: 4px; left: 50%; transform: translateX(-50%);
-}
-
-/* face details */
-.face-details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-.eyes {
-  display: flex; gap: 14px;
-}
-.eye {
-  width: 8px; height: 8px;
-  background: #3d1f2b;
-  border-radius: 50%;
-  position: relative;
-  animation: blink 5s infinite;
-}
-.eye::after {
-  content:'';
-  position: absolute;
-  width: 3px; height: 3px;
-  background: white;
-  border-radius: 50%;
-  top: 1px; left: 1px;
-}
-@keyframes blink {
-  0%,94%,98%,100%{transform:scaleY(1)}
-  96%{transform:scaleY(0.1)}
-}
-.nose {
-  width: 8px; height: 5px;
-  background: #e8799a;
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  margin-top: 2px;
-}
-.whiskers {
-  display: flex; gap: 10px; align-items: center; margin-top: 2px;
-}
-.w { width: 18px; height: 1.5px; background: #c9b8ba; border-radius: 2px; }
-
-/* bow */
-.bow-wrap {
-  position: absolute;
-  top: -4px;
-  right: -8px;
-}
-.bow {
-  width: 28px; height: 22px;
-  position: relative;
-  animation: bowWiggle 2.5s ease-in-out infinite;
-  transform-origin: center;
-}
-@keyframes bowWiggle {
-  0%,100%{transform:rotate(-5deg) scale(1)}
-  50%{transform:rotate(5deg) scale(1.05)}
-}
-.bow-side {
-  position: absolute;
-  width: 12px; height: 10px;
-  background: var(--hot);
-  border-radius: 50%;
-  top: 50%; transform: translateY(-50%);
-  box-shadow: 0 2px 6px rgba(212,79,120,0.4);
-}
-.bow-side.left  { left: 0; transform: translateY(-50%) rotate(20deg); }
-.bow-side.right { right: 0; transform: translateY(-50%) rotate(-20deg); }
-.bow-knot {
-  position: absolute;
-  width: 7px; height: 7px;
-  background: var(--deep);
-  border-radius: 50%;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-}
-
-/* ── Header ── */
-.header {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-}
+.header { text-align: center; }
 .header h1 {
-  font-size: 15px;
   font-weight: 800;
-  letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--rose);
   opacity: 0.8;
 }
 
-/* ── Display ── */
-.display-wrap {
-  background: var(--soft-grey);
-  border-radius: 20px;
-  padding: 16px 20px 14px;
-  margin-bottom: 20px;
-  border: 1.5px solid rgba(200,170,180,0.35);
-  box-shadow: inset 0 2px 8px rgba(168,50,88,0.06), inset 0 -1px 0 rgba(255,255,255,0.8);
-  position: relative;
-}
 .display-label {
   font-size: 10px;
   font-weight: 700;
@@ -238,9 +303,7 @@ body::before {
 }
 .display-history {
   font-family: 'DM Mono', monospace;
-  font-size: 12px;
   color: var(--mid-grey);
-  height: 16px;
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -252,29 +315,14 @@ body::before {
   border: none;
   outline: none;
   font-family: 'DM Mono', monospace;
-  font-size: 36px;
   font-weight: 400;
   color: var(--text);
   text-align: right;
   caret-color: var(--hot);
-  letter-spacing: -1px;
+  -webkit-appearance: none;
 }
 #display::placeholder { color: var(--mid-grey); }
-.display-cursor {
-  position: absolute;
-  bottom: 14px;
-  right: 20px;
-  width: 2px;
-  height: 36px;
-  background: var(--hot);
-  border-radius: 2px;
-  animation: cursor-blink 1.2s step-end infinite;
-  pointer-events: none;
-  opacity: 0;
-}
-@keyframes cursor-blink { 0%,100%{opacity:0} 50%{opacity:1} }
 
-/* ── Button grid ── */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -283,11 +331,8 @@ body::before {
 
 button {
   font-family: 'Nunito', sans-serif;
-  font-size: 18px;
   font-weight: 700;
-  height: 68px;
   border: none;
-  border-radius: 18px;
   cursor: pointer;
   transition: transform 0.1s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.1s, filter 0.1s;
   position: relative;
@@ -295,6 +340,7 @@ button {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   outline: none;
+  -webkit-touch-callout: none;
 }
 button::before {
   content:'';
@@ -309,7 +355,6 @@ button:hover::before { opacity: 1; }
 button:hover  { transform: translateY(-2px) scale(1.04); }
 button:active { transform: translateY(1px) scale(0.96); }
 
-/* ripple */
 .ripple {
   position: absolute;
   border-radius: 50%;
@@ -318,70 +363,110 @@ button:active { transform: translateY(1px) scale(0.96); }
   pointer-events: none;
   animation: rippleAnim 0.5s linear;
 }
-@keyframes rippleAnim {
-  to { transform: scale(4); opacity: 0; }
-}
+@keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
-/* button types */
 .btn-num {
   background: white;
   color: var(--text);
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.9) inset,
-    0 4px 12px rgba(168,50,88,0.08),
-    0 1px 3px rgba(168,50,88,0.12);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 12px rgba(168,50,88,0.08), 0 1px 3px rgba(168,50,88,0.12);
 }
 .btn-num:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 8px 20px rgba(168,50,88,0.14), 0 2px 6px rgba(168,50,88,0.16); }
-
 .btn-op {
   background: var(--blush);
   color: var(--deep);
   box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 4px 12px rgba(168,50,88,0.12);
 }
 .btn-op:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 8px 20px rgba(168,50,88,0.2); }
-
 .btn-clear {
   background: #ffe0ea;
   color: var(--deep);
-  font-size: 14px;
   letter-spacing: 1px;
   box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 4px 12px rgba(168,50,88,0.1);
 }
-
 .btn-del {
   background: #ffe0ea;
   color: var(--rose);
   box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 4px 12px rgba(168,50,88,0.1);
 }
-
 .btn-eq {
   background: linear-gradient(145deg, var(--rose), var(--hot));
   color: white;
-  font-size: 24px;
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.25) inset,
-    0 6px 16px rgba(212,79,120,0.35),
-    0 2px 4px rgba(212,79,120,0.3);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 6px 16px rgba(212,79,120,0.35), 0 2px 4px rgba(212,79,120,0.3);
 }
-.btn-eq:hover {
-  box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 12px 28px rgba(212,79,120,0.45), 0 4px 8px rgba(212,79,120,0.35);
-  filter: brightness(1.06);
-}
-
+.btn-eq:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 12px 28px rgba(212,79,120,0.45), 0 4px 8px rgba(212,79,120,0.35); filter: brightness(1.06); }
 .btn-pct {
   background: var(--blush);
   color: var(--deep);
   box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 4px 12px rgba(168,50,88,0.12);
 }
+.span2 { grid-column: span 2; }
 
-/* span-2 for zero */
-.span2 { grid-column: span 2; border-radius: 22px; }
+/* shared ear/face styles */
+.ear {
+  position: absolute;
+  background: white;
+  border: 2px solid #f0dde4;
+}
+.ear.left  { left: -2px; border-radius: 50% 50% 0 50%; transform: rotate(-8deg); }
+.ear.right { right: -2px; border-radius: 50% 0 50% 50%; transform: rotate(8deg); }
+.ear-inner {
+  position: absolute;
+  background: #fbc8d8;
+  border-radius: inherit;
+  top: 4px; left: 50%; transform: translateX(-50%);
+}
+.face-details { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.eyes { display: flex; }
+.eye {
+  background: #3d1f2b;
+  border-radius: 50%;
+  position: relative;
+  animation: blink 5s infinite;
+}
+.eye::after {
+  content:'';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  top: 1px; left: 1px;
+}
+@keyframes blink {
+  0%,94%,98%,100%{transform:scaleY(1)}
+  96%{transform:scaleY(0.1)}
+}
+.nose {
+  background: #e8799a;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  margin-top: 2px;
+}
+.whiskers { display: flex; align-items: center; margin-top: 2px; }
+.w { height: 1.5px; background: #c9b8ba; border-radius: 2px; }
+.bow-wrap { position: absolute; }
+.bow {
+  position: relative;
+  animation: bowWiggle 2.5s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes bowWiggle { 0%,100%{transform:rotate(-5deg) scale(1)} 50%{transform:rotate(5deg) scale(1.05)} }
+.bow-side {
+  position: absolute;
+  background: var(--hot);
+  border-radius: 50%;
+  top: 50%;
+  box-shadow: 0 2px 6px rgba(212,79,120,0.4);
+}
+.bow-side.left  { left: 0; transform: translateY(-50%) rotate(20deg); }
+.bow-side.right { right: 0; transform: translateY(-50%) rotate(-20deg); }
+.bow-knot {
+  position: absolute;
+  background: var(--deep);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
 
-/* ── Footer ── */
 .footer {
-  margin-top: 18px;
   text-align: center;
-  font-size: 10px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -390,7 +475,6 @@ button:active { transform: translateY(1px) scale(0.96); }
 .paw { display: inline-block; animation: pawBounce 2s ease-in-out infinite; }
 @keyframes pawBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
 
-/* ── Error shake ── */
 @keyframes shake {
   0%,100%{transform:translateX(0)}
   20%{transform:translateX(-6px)}
@@ -400,143 +484,167 @@ button:active { transform: translateY(1px) scale(0.96); }
 }
 .shake { animation: shake 0.4s cubic-bezier(0.36,0.07,0.19,0.97); }
 
-/* ── Result pop ── */
 @keyframes resultPop {
-  0%{transform:scale(1)}
-  40%{transform:scale(1.06)}
-  100%{transform:scale(1)}
+  0%{transform:scale(1)} 40%{transform:scale(1.06)} 100%{transform:scale(1)}
 }
 .result-pop { animation: resultPop 0.3s cubic-bezier(0.34,1.56,0.64,1); }
 
+@keyframes floatIn {
+  from { opacity:0; transform: translateY(32px) scale(0.95); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
 </style>
 </head>
 <body>
 
-<!-- Ambient blobs -->
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
 <div class="blob blob-3"></div>
 
+<!-- ═══ DESKTOP: card wrapper ═══ -->
 <div class="card">
 
-  <!-- Kitty face -->
+  <!-- Kitty desktop (absolute, above card) -->
   <div class="kitty">
-    <div class="ear left"><div class="ear-inner"></div></div>
-    <div class="ear right"><div class="ear-inner"></div></div>
+    <div class="ear left"><div class="ear-inner" style="width:14px;height:18px"></div></div>
+    <div class="ear right"><div class="ear-inner" style="width:14px;height:18px"></div></div>
     <div class="kitty-face">
       <div class="face-details">
-        <div class="eyes">
-          <div class="eye"></div>
-          <div class="eye"></div>
+        <div class="eyes" style="gap:14px">
+          <div class="eye" style="width:8px;height:8px"><span style="position:absolute;width:3px;height:3px;background:white;border-radius:50%;top:1px;left:1px"></span></div>
+          <div class="eye" style="width:8px;height:8px"><span style="position:absolute;width:3px;height:3px;background:white;border-radius:50%;top:1px;left:1px"></span></div>
         </div>
-        <div class="nose"></div>
-        <div class="whiskers">
-          <div class="w"></div><div class="w" style="width:10px"></div>
-          <div class="w" style="width:10px"></div><div class="w"></div>
+        <div class="nose" style="width:8px;height:5px"></div>
+        <div class="whiskers" style="gap:10px">
+          <div class="w" style="width:18px"></div><div class="w" style="width:10px"></div>
+          <div class="w" style="width:10px"></div><div class="w" style="width:18px"></div>
         </div>
       </div>
     </div>
-    <div class="bow-wrap">
-      <div class="bow">
-        <div class="bow-side left"></div>
-        <div class="bow-side right"></div>
-        <div class="bow-knot"></div>
+    <div class="bow-wrap" style="top:-4px;right:-8px">
+      <div class="bow" style="width:28px;height:22px">
+        <div class="bow-side left" style="width:12px;height:10px"></div>
+        <div class="bow-side right" style="width:12px;height:10px"></div>
+        <div class="bow-knot" style="width:7px;height:7px"></div>
       </div>
     </div>
   </div>
 
-  <!-- Header -->
-  <div class="header">
-    <h1>Kitty Calculator</h1>
-  </div>
+  <!-- ═══ MOBILE: app wrapper (no-op on desktop via display:contents) ═══ -->
+  <div class="app">
 
-  <!-- Display -->
-  <div class="display-wrap" id="displayWrap">
-    <div class="display-label">Resultado</div>
-    <div class="display-history" id="history">&nbsp;</div>
-    <input id="display" type="text" readonly placeholder="0" aria-label="display">
-    <div class="display-cursor" id="cursor"></div>
-  </div>
+    <div class="top-section">
 
-  <!-- Buttons -->
-  <div class="grid">
-    <button class="btn-clear" onclick="limpar()">C</button>
-    <button class="btn-del"   onclick="apagar()">⌫</button>
-    <button class="btn-pct"   onclick="porcentagem()">%</button>
-    <button class="btn-op"    onclick="add('/')">÷</button>
+      <!-- Kitty mobile -->
+      <div class="kitty-wrap">
+        <div class="kitty-mob">
+          <div class="ear left" style="width:24px;height:28px;top:-8px"><div class="ear-inner" style="width:12px;height:16px"></div></div>
+          <div class="ear right" style="width:24px;height:28px;top:-8px"><div class="ear-inner" style="width:12px;height:16px"></div></div>
+          <div class="kitty-face-mob">
+            <div class="face-details">
+              <div class="eyes" style="gap:12px">
+                <div class="eye" style="width:7px;height:7px"><span style="position:absolute;width:2px;height:2px;background:white;border-radius:50%;top:1px;left:1px"></span></div>
+                <div class="eye" style="width:7px;height:7px"><span style="position:absolute;width:2px;height:2px;background:white;border-radius:50%;top:1px;left:1px"></span></div>
+              </div>
+              <div class="nose" style="width:7px;height:5px"></div>
+              <div class="whiskers" style="gap:8px">
+                <div class="w" style="width:14px"></div><div class="w" style="width:8px"></div>
+                <div class="w" style="width:8px"></div><div class="w" style="width:14px"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bow-wrap" style="top:-2px;right:-6px">
+            <div class="bow" style="width:24px;height:18px">
+              <div class="bow-side left" style="width:10px;height:9px"></div>
+              <div class="bow-side right" style="width:10px;height:9px"></div>
+              <div class="bow-knot" style="width:6px;height:6px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <button class="btn-num"   onclick="add('7')">7</button>
-    <button class="btn-num"   onclick="add('8')">8</button>
-    <button class="btn-num"   onclick="add('9')">9</button>
-    <button class="btn-op"    onclick="add('*')">×</button>
+      <!-- Header -->
+      <div class="header">
+        <h1>Kitty Calculator</h1>
+      </div>
 
-    <button class="btn-num"   onclick="add('4')">4</button>
-    <button class="btn-num"   onclick="add('5')">5</button>
-    <button class="btn-num"   onclick="add('6')">6</button>
-    <button class="btn-op"    onclick="add('-')">−</button>
+      <!-- Display -->
+      <div class="display-wrap" id="displayWrap">
+        <div class="display-label">Resultado</div>
+        <div class="display-history" id="history">&nbsp;</div>
+        <input id="display" type="text" readonly placeholder="0" aria-label="display" inputmode="none">
+      </div>
 
-    <button class="btn-num"   onclick="add('1')">1</button>
-    <button class="btn-num"   onclick="add('2')">2</button>
-    <button class="btn-num"   onclick="add('3')">3</button>
-    <button class="btn-op"    onclick="add('+')">+</button>
+    </div><!-- /top-section -->
 
-    <button class="btn-num span2" onclick="add('0')">0</button>
-    <button class="btn-num"   onclick="add('.')">.</button>
-    <button class="btn-eq"    onclick="calcular()">=</button>
-  </div>
+    <!-- Buttons -->
+    <div class="buttons-section">
+      <div class="grid">
+        <button class="btn-clear" ontouchstart="" onclick="limpar()">C</button>
+        <button class="btn-del"   ontouchstart="" onclick="apagar()">⌫</button>
+        <button class="btn-pct"   ontouchstart="" onclick="porcentagem()">%</button>
+        <button class="btn-op"    ontouchstart="" onclick="add('/')">÷</button>
 
-  <div class="footer">
-    <span class="paw">🐾</span> made with love <span class="paw" style="animation-delay:.4s">🐾</span>
-  </div>
+        <button class="btn-num"   ontouchstart="" onclick="add('7')">7</button>
+        <button class="btn-num"   ontouchstart="" onclick="add('8')">8</button>
+        <button class="btn-num"   ontouchstart="" onclick="add('9')">9</button>
+        <button class="btn-op"    ontouchstart="" onclick="add('*')">×</button>
 
-</div>
+        <button class="btn-num"   ontouchstart="" onclick="add('4')">4</button>
+        <button class="btn-num"   ontouchstart="" onclick="add('5')">5</button>
+        <button class="btn-num"   ontouchstart="" onclick="add('6')">6</button>
+        <button class="btn-op"    ontouchstart="" onclick="add('-')">−</button>
+
+        <button class="btn-num"   ontouchstart="" onclick="add('1')">1</button>
+        <button class="btn-num"   ontouchstart="" onclick="add('2')">2</button>
+        <button class="btn-num"   ontouchstart="" onclick="add('3')">3</button>
+        <button class="btn-op"    ontouchstart="" onclick="add('+')">+</button>
+
+        <button class="btn-num span2" ontouchstart="" onclick="add('0')">0</button>
+        <button class="btn-num"       ontouchstart="" onclick="add('.')">.</button>
+        <button class="btn-eq"        ontouchstart="" onclick="calcular()">=</button>
+      </div>
+
+      <div class="footer">
+        <span class="paw">🐾</span> made with love <span class="paw" style="animation-delay:.4s">🐾</span>
+      </div>
+    </div><!-- /buttons-section -->
+
+  </div><!-- /app -->
+</div><!-- /card -->
 
 <script>
-const display  = document.getElementById('display');
-const history  = document.getElementById('history');
-const cursor   = document.getElementById('cursor');
-const dWrap    = document.getElementById('displayWrap');
+const display = document.getElementById('display');
+const history = document.getElementById('history');
+const dWrap   = document.getElementById('displayWrap');
 
-let expr        = '';
-let justCalc    = false;
+let expr     = '';
+let justCalc = false;
 
-/* ── Core logic ── */
 function updateDisplay(val) {
   display.value = val || '';
   display.placeholder = '0';
-  // cursor blinking only when active
-  cursor.style.opacity = val ? '1' : '0';
 }
 
 function add(val) {
-  // after a result, operator continues, digit restarts
   if (justCalc) {
     const ops = ['+','-','*','/'];
-    if (!ops.includes(val)) {
-      expr = '';
-      history.textContent = '\u00a0';
-    }
+    if (!ops.includes(val)) { expr = ''; history.textContent = '\u00a0'; }
     justCalc = false;
   }
   expr += val;
   updateDisplay(formatDisplay(expr));
-  rippleBtn(event);
-  clickSound();
 }
 
 function limpar() {
-  expr = '';
-  justCalc = false;
+  expr = ''; justCalc = false;
   updateDisplay('');
   history.textContent = '\u00a0';
-  cursor.style.opacity = '0';
-  rippleBtn(event);
 }
 
 function apagar() {
   expr = expr.slice(0, -1);
   updateDisplay(formatDisplay(expr));
-  rippleBtn(event);
 }
 
 function porcentagem() {
@@ -554,7 +662,6 @@ function calcular() {
   if (!expr) return;
   try {
     const raw = eval(expr);
-    // avoid floating point weirdness
     const result = parseFloat(raw.toPrecision(12));
     history.textContent = formatDisplay(expr) + ' =';
     expr = String(result);
@@ -562,7 +669,6 @@ function calcular() {
     justCalc = true;
     animatePop();
   } catch(e) { erro(); }
-  rippleBtn(event);
 }
 
 function erro() {
@@ -572,58 +678,38 @@ function erro() {
   dWrap.addEventListener('animationend', () => dWrap.classList.remove('shake'), {once:true});
 }
 
-/* ── Formatting ── */
 function formatDisplay(str) {
-  // Show × ÷ instead of * /
   return str.replace(/\*/g,'×').replace(/\//g,'÷');
 }
 
-/* ── Animations ── */
 function animatePop() {
   display.classList.add('result-pop');
   display.addEventListener('animationend', () => display.classList.remove('result-pop'), {once:true});
 }
 
-function rippleBtn(e) {
-  if (!e || !e.currentTarget) return;
-  const btn = e.currentTarget;
-  const r = document.createElement('span');
-  r.className = 'ripple';
-  const rect = btn.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
-  r.style.cssText = `width:${size}px;height:${size}px;left:${(rect.width-size)/2}px;top:${(rect.height-size)/2}px`;
-  btn.appendChild(r);
-  r.addEventListener('animationend', () => r.remove());
-}
-
-// Attach ripple via event delegation
+// Ripple
 document.querySelector('.grid').addEventListener('click', function(e) {
   const btn = e.target.closest('button');
   if (!btn) return;
-  rippleInner(btn, e);
-});
-
-function rippleInner(btn, e) {
   const r = document.createElement('span');
   r.className = 'ripple';
   const rect = btn.getBoundingClientRect();
   const size = Math.max(rect.width, rect.height);
-  const x = e.clientX - rect.left - size/2;
-  const y = e.clientY - rect.top  - size/2;
+  const x = (e.clientX ?? rect.left + rect.width/2) - rect.left - size/2;
+  const y = (e.clientY ?? rect.top + rect.height/2) - rect.top - size/2;
   r.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
   btn.appendChild(r);
   r.addEventListener('animationend', () => r.remove());
-}
+});
 
-/* ── Sound ── */
+// Sound
 let audioCtx;
 function clickSound(type='click') {
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc  = audioCtx.createOscillator();
+    const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    osc.connect(gain); gain.connect(audioCtx.destination);
     if (type === 'eq') {
       osc.frequency.setValueAtTime(600, audioCtx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.06);
@@ -637,23 +723,25 @@ function clickSound(type='click') {
     osc.type = 'sine';
     gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.15);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.15);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.15);
   } catch(e) {}
 }
 
-/* ── Keyboard ── */
+// Keyboard (desktop)
 document.addEventListener('keydown', function(e) {
-  if ('0123456789'.includes(e.key)) { add(e.key); }
-  else if (['+','-'].includes(e.key))   { add(e.key); }
-  else if (e.key === '*')  { add('*'); }
-  else if (e.key === '/')  { e.preventDefault(); add('/'); }
-  else if (e.key === '.')  { add('.'); }
-  else if (e.key === '%')  { porcentagem(); }
+  if ('0123456789'.includes(e.key)) add(e.key);
+  else if (['+','-'].includes(e.key)) add(e.key);
+  else if (e.key === '*') add('*');
+  else if (e.key === '/') { e.preventDefault(); add('/'); }
+  else if (e.key === '.') add('.');
+  else if (e.key === '%') porcentagem();
   else if (e.key === 'Enter' || e.key === '=') { calcular(); clickSound('eq'); }
-  else if (e.key === 'Backspace') { apagar(); }
-  else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') { limpar(); clickSound('clear'); }
+  else if (e.key === 'Backspace') apagar();
+  else if (e.key === 'Escape' || e.key.toLowerCase() === 'c') { limpar(); clickSound('clear'); }
 });
+
+// Prevent double-tap zoom on iOS
+document.addEventListener('touchend', e => e.preventDefault(), { passive: false });
 </script>
 </body>
 </html>
