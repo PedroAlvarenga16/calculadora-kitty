@@ -1,0 +1,24 @@
+{
+  "name": "Kitty Calculator",
+  "short_name": "Kitty Calc",
+  "description": "Uma calculadora fofa com gatinha 🐾",
+  "start_url": "./kitty-calculator.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf6f0",
+  "theme_color": "#fdf6f0",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
