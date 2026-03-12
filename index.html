@@ -10,6 +10,11 @@
 <title>Kitty Calculator</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kitty Calc">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -756,6 +761,13 @@ function clickSound(type='click') {
     gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.15);
     osc.start(); osc.stop(audioCtx.currentTime + 0.15);
   } catch(e) {}
+}
+
+// Registra o Service Worker (PWA)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js');
+  });
 }
 
 // Keyboard (desktop)
