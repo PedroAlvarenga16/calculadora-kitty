@@ -498,9 +498,130 @@ button:active { transform: translateY(1px) scale(0.96); }
   from { opacity:0; transform: translateY(32px) scale(0.95); }
   to   { opacity:1; transform: translateY(0) scale(1); }
 }
+
+/* ── Splash screen ── */
+#splash {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0px;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+#splash.hide {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+.splash-hearts {
+  font-size: 28px;
+  animation: splashHearts 1.4s ease-in-out infinite;
+  margin-bottom: 8px;
+}
+@keyframes splashHearts {
+  0%,100% { transform: scale(1);   }
+  50%      { transform: scale(1.2); }
+}
+.splash-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--mid-grey);
+  margin-bottom: 18px;
+}
+.splash-name {
+  font-family: 'Nunito', sans-serif;
+  font-size: 52px;
+  font-weight: 900;
+  color: var(--hot);
+  letter-spacing: -1px;
+  animation: splashPop 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+@keyframes splashPop {
+  from { opacity:0; transform: scale(0.7) translateY(20px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+.splash-sub {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rose);
+  opacity: 0.8;
+  margin-top: 6px;
+  animation: splashPop 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+  animation-delay: 0.45s;
+  letter-spacing: 1px;
+}
+.splash-kitty-wrap {
+  margin-top: 32px;
+  animation: splashPop 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+  animation-delay: 0.6s;
+  opacity: 0;
+}
+.splash-tap {
+  margin-top: 40px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--mid-grey);
+  animation: splashFade 1.6s ease-in-out infinite;
+  animation-delay: 1.2s;
+  opacity: 0;
+}
+@keyframes splashFade {
+  0%,100% { opacity: 0.3; }
+  50%      { opacity: 1;   }
+}
 </style>
 </head>
 <body>
+
+<!-- ── Splash screen ── -->
+<div id="splash">
+  <div class="splash-hearts">🎀</div>
+  <div class="splash-title">feito com amor para</div>
+  <div class="splash-name">Alana</div>
+  <div class="splash-sub">🐾 sua calculadora fofa 🐾</div>
+  <div class="splash-kitty-wrap">
+    <!-- mini kitty -->
+    <div style="position:relative;width:90px;height:72px;">
+      <div style="position:absolute;width:24px;height:28px;background:white;border:2px solid #f0dde4;top:-8px;left:-2px;border-radius:50% 50% 0 50%;transform:rotate(-8deg)"><div style="position:absolute;width:12px;height:16px;background:#fbc8d8;border-radius:inherit;top:4px;left:50%;transform:translateX(-50%)"></div></div>
+      <div style="position:absolute;width:24px;height:28px;background:white;border:2px solid #f0dde4;top:-8px;right:-2px;border-radius:50% 0 50% 50%;transform:rotate(8deg)"><div style="position:absolute;width:12px;height:16px;background:#fbc8d8;border-radius:inherit;top:4px;left:50%;transform:translateX(-50%)"></div></div>
+      <div style="width:76px;height:64px;background:white;border-radius:50% 50% 46% 46%;position:absolute;left:50%;transform:translateX(-50%);bottom:0;border:2px solid #f0dde4;box-shadow:0 4px 16px rgba(168,50,88,0.15);overflow:hidden;display:flex;align-items:center;justify-content:center;padding-top:14px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="display:flex;gap:12px;">
+            <div style="width:7px;height:7px;background:#3d1f2b;border-radius:50%;position:relative;animation:blink 5s infinite;"><span style="position:absolute;width:2px;height:2px;background:white;border-radius:50%;top:1px;left:1px"></span></div>
+            <div style="width:7px;height:7px;background:#3d1f2b;border-radius:50%;position:relative;animation:blink 5s infinite 0.1s;"><span style="position:absolute;width:2px;height:2px;background:white;border-radius:50%;top:1px;left:1px"></span></div>
+          </div>
+          <div style="width:7px;height:5px;background:#e8799a;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;margin-top:2px;"></div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:2px;">
+            <div style="width:14px;height:1.5px;background:#c9b8ba;border-radius:2px;"></div>
+            <div style="width:8px;height:1.5px;background:#c9b8ba;border-radius:2px;"></div>
+            <div style="width:8px;height:1.5px;background:#c9b8ba;border-radius:2px;"></div>
+            <div style="width:14px;height:1.5px;background:#c9b8ba;border-radius:2px;"></div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;top:-2px;right:-6px;">
+        <div style="width:24px;height:18px;position:relative;animation:bowWiggle 2.5s ease-in-out infinite;transform-origin:center;">
+          <div style="position:absolute;width:10px;height:9px;background:var(--hot);border-radius:50%;top:50%;left:0;transform:translateY(-50%) rotate(20deg);box-shadow:0 2px 6px rgba(212,79,120,0.4);"></div>
+          <div style="position:absolute;width:10px;height:9px;background:var(--hot);border-radius:50%;top:50%;right:0;transform:translateY(-50%) rotate(-20deg);box-shadow:0 2px 6px rgba(212,79,120,0.4);"></div>
+          <div style="position:absolute;width:6px;height:6px;background:var(--deep);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="splash-tap">toque para continuar</div>
+</div>
 
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
@@ -762,6 +883,17 @@ function clickSound(type='click') {
     osc.start(); osc.stop(audioCtx.currentTime + 0.15);
   } catch(e) {}
 }
+
+// ── Splash screen ──
+const splash = document.getElementById('splash');
+function dismissSplash() {
+  splash.classList.add('hide');
+  setTimeout(() => splash.remove(), 700);
+}
+splash.addEventListener('click', dismissSplash);
+splash.addEventListener('touchstart', dismissSplash, { passive: true });
+// Auto-dismiss after 4s
+setTimeout(dismissSplash, 4000);
 
 // Registra o Service Worker (PWA)
 if ('serviceWorker' in navigator) {
