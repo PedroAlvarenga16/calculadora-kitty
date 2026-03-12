@@ -2,7 +2,7 @@
   "name": "Kitty Calculator",
   "short_name": "Kitty Calc",
   "description": "Uma calculadora fofa com gatinha 🐾",
-  "start_url": "./kitty-calculator.html",
+  "start_url": "/calculadora-kitty/index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#fdf6f0",
