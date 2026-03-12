@@ -511,6 +511,7 @@ button:active { transform: translateY(1px) scale(0.96); }
   justify-content: center;
   gap: 0px;
   transition: opacity 0.6s ease, transform 0.6s ease;
+  opacity: 0; /* começa invisível, JS ativa */
 }
 #splash.hide {
   opacity: 0;
@@ -885,15 +886,29 @@ function clickSound(type='click') {
 }
 
 // ── Splash screen ──
-const splash = document.getElementById('splash');
-function dismissSplash() {
-  splash.classList.add('hide');
-  setTimeout(() => splash.remove(), 700);
+function initSplash() {
+  const splash = document.getElementById('splash');
+  if (!splash) return;
+
+  // força o Safari a renderizar antes de iniciar animações
+  splash.style.opacity = '1';
+
+  function dismissSplash() {
+    splash.classList.add('hide');
+    setTimeout(() => { if (splash.parentNode) splash.remove(); }, 700);
+  }
+
+  splash.addEventListener('click', dismissSplash);
+  splash.addEventListener('touchstart', dismissSplash, { passive: true });
+  setTimeout(dismissSplash, 4000);
 }
-splash.addEventListener('click', dismissSplash);
-splash.addEventListener('touchstart', dismissSplash, { passive: true });
-// Auto-dismiss after 4s
-setTimeout(dismissSplash, 4000);
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSplash);
+} else {
+  // já carregou (comum no Safari com cache)
+  requestAnimationFrame(() => requestAnimationFrame(initSplash));
+}
 
 // Registra o Service Worker (PWA)
 if ('serviceWorker' in navigator) {
