@@ -1,9 +1,10 @@
-const CACHE = 'kitty-calc-v1';
+const CACHE = 'kitty-calc-v2';
 const FILES = [
-  './kitty-calculator.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
+  '/calculadora-kitty/',
+  '/calculadora-kitty/index.html',
+  '/calculadora-kitty/manifest.json',
+  '/calculadora-kitty/icon-192.png',
+  '/calculadora-kitty/icon-512.png',
   'https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Nunito:wght@400;600;700;800;900&display=swap'
 ];
 
